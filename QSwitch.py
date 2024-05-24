@@ -288,24 +288,24 @@ class QSwitch():
     Drive frequency from state1 to state2 (strings representing state) 
     Stark shift from drive is ignored
     """
-    def get_base_wd(self, state1, state2, keep_sign=False, esys=None, **kwargs):
+    def get_base_wd(self, state1, state2, keep_sign=False, esys=None, debug=False, **kwargs):
 
         nb_photon_1 = np.sum(self.level_name_to_nums(state1))
         nb_photon_2 = np.sum(self.level_name_to_nums(state2))
 
         # check if this is a 1 or 2 photon transition
 
-        print(np.abs(nb_photon_1 - nb_photon_2))
+        # print(np.abs(nb_photon_1 - nb_photon_2))
 
         if np.abs(nb_photon_1 - nb_photon_2) ==1:
-            print('One photon transition')
-            wd = qt.expect(self.H, self.state(state1, esys=esys)) - qt.expect(self.H, self.state(state2, esys=esys))
+            if debug: print('One photon transition')
+            wd = qt.expect(self.H, self.state(state2, esys=esys)) - qt.expect(self.H, self.state(state1, esys=esys))
         elif np.abs(nb_photon_1 - nb_photon_2) == 2 or np.abs(nb_photon_1 - nb_photon_2) == 0:
-            print('Two photon transition')
-            wd = qt.expect(self.H, self.state(state1, esys=esys)) - qt.expect(self.H, self.state(state2, esys=esys))
+            if debug: print('Two photon transition')
+            wd = qt.expect(self.H, self.state(state2, esys=esys)) - qt.expect(self.H, self.state(state1, esys=esys)) 
             wd = wd/2
         else:
-            print('Transition not allowed')
+            if debug: print('Transition not allowed')
             return None
         if keep_sign: return wd
         return np.abs(wd)
